@@ -16,6 +16,11 @@ export class HomeScreen extends React.Component {
                         <Text style={styles.buttonText}>Vereneging</Text>
                     </View>
                 </TouchableHighlight>
+                <TouchableHighlight onPress={() => this.props.navigation.navigate('Leden')} underlayColor="white">
+                    <View style={styles.button}>
+                        <Text style={styles.buttonText}>Leden</Text>
+                    </View>
+                </TouchableHighlight>
             </View>
         );
     }

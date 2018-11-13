@@ -11,6 +11,7 @@ import {Platform, StyleSheet, Text, View, Image} from 'react-native';
 import logo from './assets/logo.png'
 import {HomeScreen} from './Screens/HomeScreen.js'
 import {VerenegingScreen} from "./Screens/VerenegingScreen"
+import {LedenScreen} from "./Screens/LedenScreen.js";
 import {StackNavigator} from 'react-navigation';
 
 const instructions = Platform.select({
@@ -39,6 +40,9 @@ const RootStack = StackNavigator(
         },
         Vereneging: {
             screen: VerenegingScreen,
+        },
+        Leden: {
+            screen: LedenScreen,
         }
     },{
         initialRouteName: 'Home',
