@@ -13,6 +13,7 @@ import {HomeScreen} from './Screens/HomeScreen.js'
 import {VerenegingScreen} from "./Screens/VerenegingScreen"
 import {LedenScreen} from "./Screens/LedenScreen.js";
 import {StackNavigator} from 'react-navigation';
+import {Nieuwsartiekel} from "./Screens/Nieuwsartiekel";
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -43,6 +44,9 @@ const RootStack = StackNavigator(
         },
         Leden: {
             screen: LedenScreen,
+        },
+        Nieuwsartiekel: {
+            screen: Nieuwsartiekel
         }
     },{
         initialRouteName: 'Home',
