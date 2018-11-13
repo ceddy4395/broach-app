@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
+import HTML from 'react-native-render-html'
 import {Button} from '../Button'
 
 const REQUEST_URL = "http://broach.nl/wp-json/wp/v2/posts?per_page=1";
@@ -36,8 +37,9 @@ export class VerenegingScreen extends React.Component {
             .then((responseData) => {
 
                 this.setState({
-                    nieuws: responseData,
-                })
+                    nieuws: {title: responseData[0].slug,
+                             content: responseData[0].content.rendered},
+                });
             })
             .done();
 
@@ -55,9 +57,9 @@ export class VerenegingScreen extends React.Component {
     }
 
     renderNieuws() {
-        return (<View>
-            <Text>Nieuws is geladen: {this.state.nieuws}</Text>
-        </View>);
+        return (<ScrollView style={{flex: 1}}>
+            <HTML html={this.state.nieuws.content}/>
+        </ScrollView>);
     }
 }
 
