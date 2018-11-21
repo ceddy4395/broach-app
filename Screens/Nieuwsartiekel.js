@@ -1,8 +1,13 @@
 import React from "react";
-import {ScrollView, Text, View} from "react-native";
+import {ScrollView, Text, View, Image} from "react-native";
 import HTML from 'react-native-render-html'
+import {
+    MKSpinner,
+    getTheme,
+} from 'react-native-material-kit';
 
 const REQUEST_URL = "http://broach.nl/wp-json/wp/v2/posts/";
+const MEDIA_URL = "http://broach.nl/wp-json/wp/v2/media/";
 
 export class Nieuwsartiekel extends React.Component {
     itemId;
@@ -47,9 +52,12 @@ export class Nieuwsartiekel extends React.Component {
         });
         fetch(REQUEST_URL + this.itemId)
             .then((respone) => respone.json())
-            .then((responseData) => {
+            .then(async (responseData) => {
+                var media = await this.getMedia(responseData.featured_media);
+                console.log("media: " + media);
                 this.setState({
-                    content: responseData.content.rendered
+                    content: responseData.content.rendered,
+                    media: media,
                 })
             }).done();
         this.ChangeThisTitle(this.itemName);
@@ -58,7 +66,8 @@ export class Nieuwsartiekel extends React.Component {
     render() {
         if (!this.state.content) {
             return (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <MKSpinner/>
                     <Text>Laden...</Text>
                     <Text>{REQUEST_URL + this.itemId}</Text>
                 </View>
@@ -69,8 +78,24 @@ export class Nieuwsartiekel extends React.Component {
 
     renderNieuws() {
         return (<ScrollView style={{flex: 1}}>
+            <Image source={{uri: this.state.media}} style={{
+                marginTop: 20,
+                flex: 1,
+                alignSelf: 'center',
+                width: 400,
+                height: 200
+            }}
+                   resizeMode="contain"/>
             <HTML html={this.state.content}/>
         </ScrollView>);
     }
+
+    getMedia = async (id) => {
+        console.log("fetching: " + id);
+        var data = await fetch(MEDIA_URL + id);
+        var jsonData = await data.json();
+        console.log("fetched: " + id);
+        return jsonData.guid.rendered;
+    };
 
 }
