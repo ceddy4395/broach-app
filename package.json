@@ -1,5 +1,5 @@
 {
-  "name": "Broach",
+  "name": "broach",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,11 +7,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "Base64": "^1.0.1",
+    "base-64": "^0.1.0",
     "react": "16.6.0-alpha.8af6728",
     "react-native": "0.57.3",
     "react-native-material-kit": "^0.5.1",
     "react-native-render-html": "^3.10.0",
-    "react-navigation": "^2.18.0"
+    "react-navigation": "^2.18.0",
+    "url": "^0.11.0",
+    "util": "^0.11.1",
+    "wpapi": "^1.1.2"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",

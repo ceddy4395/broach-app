@@ -16,8 +16,6 @@ export class Nieuwsartiekel extends React.Component {
         super(props);
         const { navigation } = props;
         this.itemId = navigation.getParam('id', '1');
-        // this.itemId = '4191';
-        // Nieuwsartiekel.itemName = "test";
         this.itemName = navigation.getParam('name', 'noname');
         this.state = {
             isLoading: true
@@ -34,9 +32,9 @@ export class Nieuwsartiekel extends React.Component {
     ChangeThisTitle = (titleText) => {
         const {setParams} = this.props.navigation;
         setParams({ title: titleText })
-    }
+    };
 
-    getInitialState() {
+    static getInitialState() {
         return {
             content: null
         }
@@ -59,7 +57,7 @@ export class Nieuwsartiekel extends React.Component {
                     content: responseData.content.rendered,
                     media: media,
                 })
-            }).done();
+            });
         this.ChangeThisTitle(this.itemName);
     }
 

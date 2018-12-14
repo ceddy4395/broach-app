@@ -14,6 +14,8 @@ import {VerenegingScreen} from "./Screens/VerenegingScreen"
 import {LedenScreen} from "./Screens/LedenScreen.js";
 import {StackNavigator} from 'react-navigation';
 import {Nieuwsartiekel} from "./Screens/Nieuwsartiekel";
+import {Brevet} from "./Screens/Brevet";
+import {AftekenlijstScreen} from "./Screens/AftekenlijstScreen";
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -22,15 +24,28 @@ const instructions = Platform.select({
         'Shake or press menu button for dev menu',
 });
 
+const globalState = {};
+
+export const StoreGlobal = (obj) => {
+
+    if(obj.type==='set'){
+        globalState[obj.key]=obj.value;
+        return true;
+    }else
+    if(obj.type==='get'){
+        return globalState[obj.key];
+    }else{
+        return null;
+    }
+
+};
+
+
 type Props = {};
+//https://github.com/github/fetch/issues/452#issue-195754488 example for login
 export default class App extends Component<Props> {
     render() {
         return <RootStack/>;
-        //     <View style={styles.container}>
-        //         <Text style={styles.welcome}>Broach App</Text>
-        //         <Image style={styles.logoStyle} source={logo}/>
-        //     </View>
-        // );
     }
 }
 
@@ -47,15 +62,20 @@ const RootStack = StackNavigator(
         },
         Nieuwsartiekel: {
             screen: Nieuwsartiekel
+        },
+        Brevet: {
+            screen: Brevet
+        },
+        AftekenlijstScreen: {
+            screen: AftekenlijstScreen
         }
     },{
         initialRouteName: 'Home',
         navigationOptions: {
             headerStyle: {
                 backgroundColor: '#1f3151',
-            },
-            headerTintColor: '#ffffff'
-
+                textAlign: 'center'
+            }
         }
     }
 );

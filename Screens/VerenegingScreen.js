@@ -63,7 +63,6 @@ export class VerenegingScreen extends React.Component {
                                 >
                                     <HTML style={theme.cardContentStyle} html={responseData[i].excerpt.rendered}/>
                                 </View>
-                                {/*<View style={}>menu</View>*/}
                                 <TouchableHighlight onPress={() => this.prop.navigation.navigate('Nieuwsartiekel', {
                                     id: responseData[i].id,
                                     name: responseData[i].title.rendered
@@ -77,7 +76,7 @@ export class VerenegingScreen extends React.Component {
                 this.setState({
                     nieuws: artikels,
                 });
-            }).done();
+            });
     }
 
     render() {
