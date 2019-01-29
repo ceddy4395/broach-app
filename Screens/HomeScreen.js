@@ -4,11 +4,14 @@ import {
     MKButton,
     MKColor, MKSpinner,
 } from 'react-native-material-kit';
+import {server_ip} from "../back-end/serverconnection";
 
 import {StoreGlobal} from "../App";
 
 // var login = 'user';
 // var password = 'userPass';
+
+var url = "http://app.broach.nl";
 
 export class HomeScreen extends React.Component {
 
@@ -52,11 +55,12 @@ export class HomeScreen extends React.Component {
                 this.setState({
                     loggingIn: true
                 });
-                fetch("http://145.94.205.6:1234/login?username=" + username + "&password=" + password, {
+                fetch(server_ip+"/login?username=" + username + "&password=" + password, {
                     method: 'POST',
                     credentials: 'include'
                 }).then(response => {
                     if (!response.ok) {
+                        console.log(response);
                         this.setState({
                             login: false,
                             loggingIn: false
@@ -69,7 +73,14 @@ export class HomeScreen extends React.Component {
                         StoreGlobal({type: 'set', key: 'username', value: username})
                     }
 
-                });
+                }).catch((reason => {
+                    console.log("Failed to login because: " + reason);
+                    this.setState({
+                        login: false,
+                        loggingIn: false,
+                        loginFail: true
+                    });
+                }));
             }
         });
     }
@@ -126,6 +137,10 @@ export class HomeScreen extends React.Component {
                             Login
                         </Text>
                     </MKButton>
+
+                    { this.state.loginFail &&
+                        <Text >Kon niet inloggen</Text>
+                    }
                 </View>
             </View>
         )

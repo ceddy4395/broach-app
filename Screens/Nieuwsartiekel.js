@@ -3,7 +3,6 @@ import {ScrollView, Text, View, Image} from "react-native";
 import HTML from 'react-native-render-html'
 import {
     MKSpinner,
-    getTheme,
 } from 'react-native-material-kit';
 
 const REQUEST_URL = "http://broach.nl/wp-json/wp/v2/posts/";

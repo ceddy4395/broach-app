@@ -1,9 +1,10 @@
 import React from 'react'
 import {ScrollView, Text, View, StyleSheet, Platform} from "react-native";
 import {MKSpinner, MKSwitch, MKColor} from "react-native-material-kit";
+import Dialog, {DialogContent, DialogTitle, SlideAnimation, DialogButton} from 'react-native-popup-dialog';
 import {StoreGlobal} from "../App";
+import {server_ip} from "../back-end/serverconnection";
 
-var REQUEST_URL = "http://145.94.205.6:1234";
 
 export class AftekenlijstScreen extends React.Component {
     lijstSoort;
@@ -12,10 +13,11 @@ export class AftekenlijstScreen extends React.Component {
     constructor(props) {
         super(props);
         const {navigation} = props;
-        this.lijstSoort = navigation.getParam('type', 'b');
+        this.lijstSoort = navigation.getParam('type', 'B');
         this.state = {
             isLoading: true,
-            naam: StoreGlobal({type: "get", key: "username"})
+            naam: StoreGlobal({type: "get", key: "username"}),
+            data: navigation.getParam('responseData', false)
         };
         this.changeThisTitle(this.lijstSoort + "-lijst")
     }
@@ -41,33 +43,57 @@ export class AftekenlijstScreen extends React.Component {
     }
 
     componentDidMount(): void {
-        this.fetchData();
+        if (!this.state.data) {
+            this.fetchData();
+        } else {
+            this.setState({
+                lijst: this.createLijst(this.state.data)
+            });
+        }
+
     }
 
     fetchData() {
         this.setState({
             content: null,
         });
-        fetch(REQUEST_URL + '/aftekenlijst/' + this.state.name, {
+        console.log("REquest: " + server_ip + '/aftekenlijst/'+ this.lijstSoort);
+        fetch(server_ip + '/aftekenlijst/'+ this.lijstSoort, {
             credentials: 'include'
         })
-            .then(response => response.json())
+            .then(response => {
+                console.log(response);
+                return JSON.parse(response._bodyInit);
+            })
             .then(responseData => {
-                console.log(responseData);
-                let content = [];
-                content.push(<Text style={styles.title}>Walonderdelen</Text>);
-                responseData['walOnderDelen'].forEach((item) => {
-                    content.push(this.maakAftekenItem(item.id, item.title, item.ondertekend));
-                });
-
+                console.log("response: " + responseData);
                 this.setState({
-                    lijst: content
-                })
+                    data: responseData
+                });
+                this.setState({
+                    lijst: this.createLijst(this.state.data)
+                });
             })
             .catch(err => {
                 console.log("Error " + err);
                 this.setState({error: true,})
             }).done();
+    }
+    createLijst(responseData) {
+        let content = [];
+        content.push(<Text key="walonderdelen" style={styles.title}>Walonderdelen</Text>);
+        responseData["walOnderDelen"].forEach((item) => {
+            content.push(this.maakAftekenItem(item.id, item.title, item.ondertekend));
+        });
+        content.push(<Text key="zeilen" style={styles.title}>Zeilen</Text>);
+        responseData["zeilen"].forEach((item) => {
+            content.push(this.maakAftekenItem(item.id, item.title, item.ondertekend));
+        });
+        content.push(<Text key="overig" style={styles.title}>Zeilen</Text>);
+        responseData["overig"].forEach((item) => {
+            content.push(this.maakAftekenItem(item.id, item.title, item.ondertekend));
+        });
+        return content;
     }
 
     changeThisTitle = (titleText) => {
@@ -76,6 +102,7 @@ export class AftekenlijstScreen extends React.Component {
     };
 
     render() {
+        console.log("rendering");
         if (!this.state.lijst) {
             return (
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -94,30 +121,11 @@ export class AftekenlijstScreen extends React.Component {
         }
     }
 
-    renderLijst() {
-        return (<ScrollView style={styles.screen}>
-            <Text style={styles.title}>Walonderdelen</Text>
-            <View style={styles.container}>
-                <View style={styles.blackbox}>
-                    <Text>Zetten van de mast</Text>
-                </View>
-                <View style={styles.redbox}>
-                    <MKSwitch
-                        onColor="rgba(255,152,0,.3)"
-                        thumbOnColor={MKColor.Orange}
-                        rippleColor="rgba(255,152,0,.2)"
-                        onPress={() => console.log('orange switch pressed')}
-                        onCheckedChange={(e) => console.log('orange switch checked', e)}
-                    />
-                </View>
-            </View>
-        </ScrollView>);
-    }
-
     maakAftekenItem(id, title, ondertekend) {
-        return (<View style={styles.container}
-                id={id}
-                key={id}>
+        var content = [];
+        content.push(<View style={styles.container}
+                           id={id}
+                           key={id}>
             <View style={styles.blackbox}>
                 <Text>{title}</Text>
             </View>
@@ -128,9 +136,18 @@ export class AftekenlijstScreen extends React.Component {
                     thumbOnColor={MKColor.Orange}
                     rippleColor="rgba(255,152,0,.2)"
                     onPress={() => console.log('orange switch pressed ' + id)}
-                    onCheckedChange={(e) => console.log('orange switch checked' + id, e)}/>
+                    onCheckedChange={(e) => {
+                        if (e.checked === true) {
+                            console.log("opening verify screen");
+                            this.props.navigation.navigate('VerifyScreen', {
+                                id: id,
+                                soort: this.lijstSoort
+                            });
+                        }
+                    }}/>
             </View>
-        </View>)
+        </View>);
+        return content;
     }
 
 }

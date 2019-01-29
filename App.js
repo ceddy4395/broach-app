@@ -16,6 +16,7 @@ import {StackNavigator} from 'react-navigation';
 import {Nieuwsartiekel} from "./Screens/Nieuwsartiekel";
 import {Brevet} from "./Screens/Brevet";
 import {AftekenlijstScreen} from "./Screens/AftekenlijstScreen";
+import {VerifyScreen} from "./Screens/VerifyScreen";
 
 const instructions = Platform.select({
     ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -68,6 +69,9 @@ const RootStack = StackNavigator(
         },
         AftekenlijstScreen: {
             screen: AftekenlijstScreen
+        },
+        VerifyScreen: {
+            screen: VerifyScreen
         }
     },{
         initialRouteName: 'Home',
